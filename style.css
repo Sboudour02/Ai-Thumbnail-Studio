@@ -111,19 +111,6 @@ h4 {
     margin: 0 auto;
     width: 100%;
     padding: 30px;
-    gap: 24px;
-    height: calc(100vh - 200px);
-}
-
-/* --- Header --- */
-header {
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
-    padding: 15px 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
 }
 
 .header-content {

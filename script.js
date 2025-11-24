@@ -45,7 +45,7 @@ const translations = {
         downloadBtn: "تحميل الصورة (HD)",
         disclaimerText: "* سيتم حذف الرابط تلقائياً بعد 10 دقائق",
         langBtnText: "English",
-        langBtnIcon: "Languages/English.png",
+        langBtnIcon: "English.png",
         historyTitle: "السجل (History)",
         emptyHistory: "لا توجد صور سابقة",
         promoText: "مجاني 100%، بدون علامة مائية، بدون تسجيل.",
@@ -84,7 +84,7 @@ const translations = {
         downloadBtn: "Download Image (HD)",
         disclaimerText: "* Link will be removed automatically after 10 minutes",
         langBtnText: "العربية",
-        langBtnIcon: "Languages/العربية.png",
+        langBtnIcon: "العربية.png",
         historyTitle: "History",
         emptyHistory: "No previous images",
         promoText: "100% free, no watermark, no registration.",
@@ -117,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
         style: document.getElementById('style'),
         overlayText: document.getElementById('overlayText'),
         textColor: document.getElementById('textColor'),
-        strokeColor: document.getElementById('strokeColor'),
         strokeColor: document.getElementById('strokeColor'),
         fontFamily: document.getElementById('fontFamily'),
         textSize: document.getElementById('textSize'),
@@ -275,7 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 3. Image Generation
-    // 3. Image Generation
     els.form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const prompt = els.prompt.value.trim();
@@ -338,9 +336,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error(error);
-            alert("Error generating image. Please try again.");
             els.loadingState.style.display = 'none';
             els.generateBtn.disabled = false;
+            // Show error in welcome state or a toast (simplified for now)
+            alert("Error generating image. Please try again."); // Keeping alert for now but could be improved
         }
     });
 
@@ -377,7 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
         previewOverlay.style.color = els.textColor.value;
         previewOverlay.style.fontFamily = els.fontFamily.value;
         previewOverlay.style.fontSize = (parseInt(els.textSize.value) / 2) + 'px';
-        // Apply Stroke to Preview
         // Apply Stroke to Preview
         previewOverlay.style.webkitTextStroke = `2px ${stroke}`;
         // Enhanced Shadow for "Professional" look
@@ -439,17 +437,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.shadowOffsetY = 5;
 
                 // Fill (Text)
-                ctx.fillStyle = els.textColor.value;
                 ctx.fillText(text, canvas.width / 2, canvas.height / 2);
             }
 
             const link = document.createElement('a');
             link.download = `thumbnail-${Date.now()}.png`;
             link.href = canvas.toDataURL('image/png');
+
+            // Fix for mobile/Firefox: Append to body
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
+
         } catch (err) {
             console.error("Canvas export failed:", err);
-            window.open(els.imageCanvas.src, '_blank');
+            // Mobile Fallback: Show image in modal
+            showImageModal(els.imageCanvas.src);
+            alert(currentLang === 'ar' ? "اضغط مطولاً على الصورة لحفظها" : "Long press image to save");
         }
     });
 
