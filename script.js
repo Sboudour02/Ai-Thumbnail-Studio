@@ -95,14 +95,14 @@ const translations = {
 
 // --- Style Prompts ---
 const STYLES = {
-    realistic: 'ultra realistic, professional photography, cinematic studio lighting, sharp focus, detailed skin texture, realistic eyes, natural skin tones, 8K, DSLR quality, high detail, canon ef 50mm f/1.4 look',
-    cartoon: 'bold cartoon style, thick outlines, vibrant saturated colors, playful composition, Pixar/Disney inspired, expressive characters, simplified shapes, high contrast',
-    caricature: 'exaggerated caricature portrait, strong facial features, playful exaggeration, high character expression, bold linework, stylized proportions, vibrant palette, editorial illustration',
-    '3d': 'photorealistic 3D render, octane render, unreal engine 5, ray tracing reflections, PBR materials, volumetric lighting, cinematic camera, hyper realistic 3D',
-    anime: 'anime art style, vibrant colors, clean linework, cel shading, studio quality animation, highly detailed character, dramatic rim lighting',
-    gaming: 'youtube gaming thumbnail style, intense action, neon lighting, esports atmosphere, dynamic angle, glowing effects, high contrast, 4k, fortnite/cod style vibes',
-    horror: 'horror theme, dark atmosphere, spooky lighting, fog, mysterious, scary, cinematic horror movie look, high detail, shadow play',
-    tech: 'tech review style, clean modern desk setup, gadgets, bokeh background, bright studio lighting, mkbhd style, crisp details, futuristic vibes'
+    realistic: 'ultra realistic, professional photography, cinematic studio lighting, sharp focus, detailed skin texture, realistic eyes, natural skin tones, 8K, DSLR quality, high detail, canon ef 50mm f/1.4 look, masterpiece, award winning',
+    cartoon: 'bold cartoon style, thick outlines, vibrant saturated colors, playful composition, Pixar/Disney inspired, expressive characters, simplified shapes, high contrast, professional illustration, vector art quality',
+    caricature: 'exaggerated caricature portrait, strong facial features, playful exaggeration, high character expression, bold linework, stylized proportions, vibrant palette, editorial illustration, witty and detailed',
+    '3d': 'photorealistic 3D render, octane render, unreal engine 5, ray tracing reflections, PBR materials, volumetric lighting, cinematic camera, hyper realistic 3D, 8k resolution, detailed textures',
+    anime: 'anime art style, vibrant colors, clean linework, cel shading, studio quality animation, highly detailed character, dramatic rim lighting, makoto shinkai style, wallpaper quality',
+    gaming: 'youtube gaming thumbnail style, intense action, neon lighting, esports atmosphere, dynamic angle, glowing effects, high contrast, 4k, fortnite/cod style vibes, clickbait composition, eye catching',
+    horror: 'horror theme, dark atmosphere, spooky lighting, fog, mysterious, scary, cinematic horror movie look, high detail, shadow play, psychological thriller vibe, hyperrealistic',
+    tech: 'tech review style, clean modern desk setup, gadgets, bokeh background, bright studio lighting, mkbhd style, crisp details, futuristic vibes, product photography, high end'
 };
 
 const NEGATIVE_DEFAULTS = 'low quality, blurry, pixelated, deformed, watermark, text overlay, signature, bad anatomy, ugly, distorted';
@@ -299,13 +299,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('loadingText').textContent = currentLang === 'ar' ? "جاري تحسين الوصف..." : "Optimizing prompt...";
 
                 try {
-                    // Use Gemini model for ultra-fast translation
-                    const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent("You are a visual prompt engineer. Translate the Arabic topic to a detailed English prompt for Flux.1 AI. Focus on lighting, style, and composition. DO NOT include text. Leave negative space for text overlay.\n\nINPUT: " + prompt + "\n\nOUTPUT: [SUBJECT] :: [STYLE] :: [COMPOSITION]")}?model=gemini`);
+                    // Create a promise for the translation request
+                    const translationPromise = fetch(`https://text.pollinations.ai/${encodeURIComponent("Translate to English for Image Gen. Output ONLY the prompt. Input: " + prompt)}?model=openai`);
+
+                    // Create a promise for the timeout (3 seconds)
+                    const timeoutPromise = new Promise((_, reject) =>
+                        setTimeout(() => reject(new Error("Translation timeout")), 3000)
+                    );
+
+                    // Race them!
+                    const response = await Promise.race([translationPromise, timeoutPromise]);
+
                     if (response.ok) {
                         processingPrompt = await response.text();
                     }
                 } catch (err) {
-                    console.warn("Translation failed, using original prompt", err);
+                    console.warn("Translation skipped/failed (using original):", err);
+                    // Fallback is already set to 'prompt'
                 }
 
                 // Restore loading text
@@ -314,8 +324,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const fullPrompt = constructPrompt(processingPrompt, style);
             const encodedPrompt = encodeURIComponent(fullPrompt);
-            // Use Flux-Schnell model for ultra-fast generation
-            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1280&height=720&nologo=true&model=flux-schnell&seed=${Math.floor(Math.random() * 10000)}`;
+            // Use Flux-Schnell model for ultra-fast generation with quality boost
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1280&height=720&nologo=true&private=true&model=flux-schnell&seed=${Math.floor(Math.random() * 10000)}`;
 
             const img = new Image();
             img.crossOrigin = "Anonymous";
