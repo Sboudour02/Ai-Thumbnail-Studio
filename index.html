@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO Meta Tags -->
+    <title>Ai Thumbnail Studio</title>
+    <meta name="description"
+        content="أداة احترافية لإنشاء صور مصغرة لليوتيوب باستخدام الذكاء الاصطناعي، 100% مجانا، بدون علامة مائية، وبدون تسجيل الدخول.">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&family=Outfit:wght@400;600;700&family=Bebas+Neue&family=Anton&family=Montserrat:wght@700;900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <img src="logo.png" alt="Ai Thumbnail Studio Logo" class="logo-img">
+                <span class="brand-name">Ai Thumbnail Studio</span>
+            </div>
+
+            <!-- Promo Text -->
+            <div class="header-promo">
+                <span id="promoText">100% free, no watermark, no registration.</span>
+            </div>
+
+            <div class="controls">
+                <button id="langBtn" class="btn btn-secondary">
+                    <img src="Languages/English.png" alt="Language" class="icon">
+                    <span>English</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Description Section -->
+    <section class="hero-description">
+        <p class="hero-text" id="heroText">
+            The ultimate free AI-powered YouTube thumbnail generator. Simply describe your video, and our intelligent
+            engine will instantly produce a stunning, high-quality thumbnail (1280×720) optimized for clicks and viewer
+            engagement ready to download in seconds.
+        </p>
+    </section>
+
+    <!-- Top Ad Slot -->
+    <div class="ad-container">
+        <div class="ad-slot">
+            <span>Advertisement Space</span>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar: History -->
+        <aside class="sidebar glass-panel">
+            <h3 class="section-title history-title" id="historyTitle">السجل (History)</h3>
+            <div id="historyList" class="history-list">
+                <!-- History items will be injected here -->
+                <div class="placeholder-state empty-history">
+                    لا توجد صور سابقة
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main>
+            <!-- Editor Panel -->
+            <section class="editor-panel glass-panel">
+                <h2 id="panelTitle" class="section-title">إعدادات الصورة</h2>
+
+                <form id="generatorForm">
+                    <div class="form-group">
+                        <label id="descLabel" for="prompt">وصف الفيديو</label>
+                        <textarea id="prompt" rows="4" placeholder="مثال: شخص مصدوم ينظر إلى شاشة الكمبيوتر..."
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label id="styleLabel" for="style">النمط الفني</label>
+                        <select id="style">
+                            <option value="realistic">واقعي (Realistic)</option>
+                            <option value="cartoon">كرتون (Cartoon)</option>
+                            <option value="3d">ثلاثي الأبعاد (3D Render)</option>
+                            <option value="anime">أنمي (Anime)</option>
+                            <option value="caricature">كاريكاتير (Caricature)</option>
+                            <option value="gaming">ألعاب (Gaming) 🎮</option>
+                            <option value="horror">رعب (Horror) 👻</option>
+                            <option value="tech">تقنية (Tech) 💻</option>
+                        </select>
+                    </div>
+
+                    <!-- Text Overlay Controls -->
+                    <div class="form-group text-overlay-section">
+                        <label id="textLabel">إضافة نص (اختياري)</label>
+                        <input type="text" id="overlayText" placeholder="اكتب النص هنا...">
+
+                        <!-- Color Controls -->
+                        <div class="color-controls">
+                            <div class="color-group">
+                                <label id="textColorLabel" class="mini-label">لون النص</label>
+                                <input type="color" id="textColor" value="#ffffff" class="color-picker-input">
+                            </div>
+                            <div class="color-group">
+                                <label id="strokeColorLabel" class="mini-label">لون الحدود</label>
+                                <input type="color" id="strokeColor" value="#000000" class="color-picker-input">
+                            </div>
+                            <select id="fontFamily" class="text-size-select" style="width: 100px;">
+                                <option value="'Impact', 'Arial Black', sans-serif">Impact</option>
+                                <option value="'Bebas Neue', sans-serif">Bebas</option>
+                                <option value="'Anton', sans-serif">Anton</option>
+                                <option value="'Montserrat', sans-serif">Modern</option>
+                                <option value="'Cairo', sans-serif">Arabic</option>
+                            </select>
+                            <select id="textSize" class="text-size-select">
+                                <option value="40">صغير</option>
+                                <option value="60" selected>متوسط</option>
+                                <option value="80">كبير</option>
+                                <option value="120">ضخم</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="generateBtn" class="btn btn-primary full-width">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                        </svg>
+                        <span>توليد الصورة</span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Preview Panel -->
+            <section class="preview-panel glass-panel" id="previewPanel">
+
+                <h2 id="workspaceSectionTitle" class="section-title">مساحة العمل</h2>
+
+                <div class="canvas-container">
+                    <!-- Welcome State -->
+                    <div class="placeholder-state" id="welcomeState">
+                        <svg class="placeholder-icon" viewBox="0 0 24 24">
+                            <path
+                                d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                        </svg>
+                        <h3 id="welcomeTitle" class="welcome-title-style">مساحة العمل
+                        </h3>
+                        <p id="welcomeText">أدخل الوصف واضغط توليد لتبدأ الإبداع</p>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div class="loading-state" id="loadingState">
+                        <span class="loader"></span>
+                        <p id="loadingText">جاري تصميم الصورة بالذكاء الاصطناعي...</p>
+                    </div>
+
+                    <!-- Result Image -->
+                    <img id="imageCanvas" alt="Generated Thumbnail" crossorigin="anonymous">
+
+                    <!-- Canvas for Text Overlay (Hidden, used for processing) -->
+                    <canvas id="finalCanvas" style="display: none;"></canvas>
+                </div>
+
+                <div id="actions" class="hidden-actions hidden-actions-container">
+                    <button id="downloadBtn" class="btn btn-primary full-width">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                        </svg>
+                        <span>تحميل الصورة (HD)</span>
+                    </button>
+                    <p id="disclaimerText" class="disclaimer disclaimer-text">
+                        * سيتم حذف الرابط تلقائياً بعد 10 دقائق
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal" style="display: none;">
+        <img id="modalImage" class="modal-image" alt="History Image">
+    </div>
+
+    <!-- Bottom Ad Slot -->
+    <div class="ad-container">
+        <div class="ad-slot">
+            <span>Advertisement Space</span>
+        </div>
+    </div>
+
+    <footer class="site-footer" dir="ltr">
+        <div class="footer-content">
+            <span class="copyright">Ai Thumbnail Studio. © All Rights Reserved 2025.</span>
+            <span class="separator hidden-mobile">•</span>
+            <span class="developer">Developed and maintained by <strong class="brand-highlight">e-Market
+                    Hub</strong></span>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
