@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 try {
                     // Use Gemini model for ultra-fast translation
-                    const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent("You are an expert Prompt Engineer for Flux.1 AI. Your goal is to generate a prompt that creates a YouTube thumbnail with PERFECT text rendering.\n\nINPUT: " + prompt + "\n\nINSTRUCTIONS:\n1. Analyze the input for any specific text requests (e.g., 'written text', 'title', 'sign').\n2. If text is found, you MUST describe it as: \"Huge bold text reading 'TEXT' in [Font Style] font at [Position]\"\n3. Force the model to focus on text by putting the text description AT THE VERY START of the prompt.\n4. Use keywords: 'typographic design', 'render text', 'crisp', 'vector style'.\n5. If no text is requested, focus on 'hyper-detailed', '8k', 'cinematic lighting'.\n\nOUTPUT FORMAT (English Only):\n[TEXT DESCRIPTION] :: [SUBJECT DESCRIPTION] :: [STYLE & LIGHTING]\n\nExample Output:\nHuge 3D gold text reading 'WINNER' in center :: shocked gamer face holding a trophy :: cyberpunk neon lighting, 8k, detailed\n\nGENERATE PROMPT NOW:")}?model=gemini`);
+                    const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent("You are a visual prompt engineer. Translate the Arabic topic to a detailed English prompt for Flux.1 AI. Focus on lighting, style, and composition. DO NOT include text. Leave negative space for text overlay.\n\nINPUT: " + prompt + "\n\nOUTPUT: [SUBJECT] :: [STYLE] :: [COMPOSITION]")}?model=gemini`);
                     if (response.ok) {
                         processingPrompt = await response.text();
                     }
@@ -314,8 +314,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const fullPrompt = constructPrompt(processingPrompt, style);
             const encodedPrompt = encodeURIComponent(fullPrompt);
-            // Use Flux model for best quality/speed balance
-            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1280&height=720&nologo=true&model=flux&seed=${Math.floor(Math.random() * 10000)}`;
+            // Use Flux-Schnell model for ultra-fast generation
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1280&height=720&nologo=true&model=flux-schnell&seed=${Math.floor(Math.random() * 10000)}`;
 
             const img = new Image();
             img.crossOrigin = "Anonymous";
@@ -346,7 +346,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function constructPrompt(userDesc, styleKey) {
         const stylePrompt = STYLES[styleKey] || '';
         // userDesc now comes from the "Flux Expert" prompt which puts text first.
-        return `${userDesc}, ${stylePrompt}, professional lighting, 8k resolution, perfect composition, masterpiece, sharp focus, accurate text, correct spelling, avoid: ${NEGATIVE_DEFAULTS}`;
+        const negativePrompts = "text, letters, typography, watermark, signature, writing, low quality, blurry, pixelated, deformed, bad anatomy, ugly, distorted";
+        return `${userDesc}, ${stylePrompt}, professional lighting, 8k resolution, perfect composition, masterpiece, sharp focus, clean background, negative space for text, avoid: ${negativePrompts}`;
     }
 
     // 4. Text Overlay Logic
@@ -419,6 +420,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
 
+                // Fix for Arabic Text Rendering (RTL)
+                const isArabic = /[\u0600-\u06FF]/.test(text);
+                if (isArabic) {
+                    ctx.direction = 'rtl';
+                } else {
+                    ctx.direction = 'ltr';
+                }
+
                 // Stroke (Outline) - Enhanced for HD
                 ctx.lineWidth = 8;
                 ctx.strokeStyle = els.strokeColor ? els.strokeColor.value : '#000000';
@@ -440,22 +449,68 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.fillText(text, canvas.width / 2, canvas.height / 2);
             }
 
-            const link = document.createElement('a');
-            link.download = `thumbnail-${Date.now()}.png`;
-            link.href = canvas.toDataURL('image/png');
+            // Convert Canvas to Blob for robust download
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    console.error("Blob creation failed");
+                    showDownloadFallback();
+                    return;
+                }
 
-            // Fix for mobile/Firefox: Append to body
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `thumbnail-${Date.now()}.png`;
+                link.href = url;
+
+                // Fix for mobile/Firefox: Append to body
+                document.body.appendChild(link);
+
+                try {
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    if (isMobile) {
+                        showDownloadFallback(true); // Show "Done" or "Long press"
+                    }
+
+                } catch (err) {
+                    console.error("Download click failed:", err);
+                    showDownloadFallback();
+                }
+            }, 'image/png');
 
         } catch (err) {
             console.error("Canvas export failed:", err);
-            // Mobile Fallback: Show image in modal
-            showImageModal(els.imageCanvas.src);
-            alert(currentLang === 'ar' ? "اضغط مطولاً على الصورة لحفظها" : "Long press image to save");
+            showDownloadFallback();
         }
     });
+
+    function showDownloadFallback(isSuccessHint = false) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalInstruction = document.getElementById('modalInstruction');
+
+        // Use the high-res canvas if available, otherwise the preview
+        const finalCanvas = document.getElementById('finalCanvas');
+        if (finalCanvas && finalCanvas.width > 0) {
+            modalImage.src = finalCanvas.toDataURL('image/png');
+        } else {
+            modalImage.src = els.imageCanvas.src;
+        }
+
+        modal.style.display = 'flex';
+        modalInstruction.style.display = 'block';
+
+        if (isSuccessHint) {
+            modalInstruction.textContent = currentLang === 'ar' ? "تم التحميل! إذا لم تجد الصورة، اضغط مطولاً لحفظها." : "Downloaded! If not found, long press to save.";
+            modalInstruction.style.background = "rgba(16, 185, 129, 0.8)"; // Greenish
+        } else {
+            modalInstruction.textContent = currentLang === 'ar' ? "اضغط مطولاً على الصورة لحفظها" : "Long press image to save";
+            modalInstruction.style.background = "rgba(0, 0, 0, 0.7)";
+        }
+    }
 
     applyLanguage(currentLang);
 });
