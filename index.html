@@ -5,12 +5,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- SEO Meta Tags -->
-    <title>Ai Thumbnail Studio</title>
+    <title>Ai Thumbnail Studio | Free AI YouTube Thumbnail Generator</title>
     <meta name="description"
-        content="أداة احترافية لإنشاء صور مصغرة لليوتيوب باستخدام الذكاء الاصطناعي، 100% مجانا، بدون علامة مائية، وبدون تسجيل الدخول.">
+        content="Create stunning, click-worthy YouTube thumbnails for free with AI. No watermark, no login. Best AI Thumbnail Maker 2025. Supports Arabic & English.">
+    <meta name="keywords"
+        content="AI thumbnail generator, free youtube thumbnail maker, no watermark, ai image generator, youtube branding, text to image, flux ai, تصميم صور مصغرة, ذكاء اصطناعي">
+    <meta name="author" content="e-Market Hub">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aithumbnailstudio.com/">
+    <meta property="og:title" content="Ai Thumbnail Studio | Free AI YouTube Thumbnail Generator">
+    <meta property="og:description"
+        content="Create stunning, click-worthy YouTube thumbnails for free with AI. No watermark, no login. Best AI Thumbnail Maker 2025.">
+    <meta property="og:image" content="logo.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://aithumbnailstudio.com/">
+    <meta property="twitter:title" content="Ai Thumbnail Studio | Free AI YouTube Thumbnail Generator">
+    <meta property="twitter:description"
+        content="Create stunning, click-worthy YouTube thumbnails for free with AI. No watermark, no login. Best AI Thumbnail Maker 2025.">
+    <meta property="twitter:image" content="logo.png">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Ai Thumbnail Studio",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Free AI-powered YouTube thumbnail generator. Create high-quality, click-optimized thumbnails in seconds.",
+      "author": {
+        "@type": "Organization",
+        "name": "e-Market Hub"
+      }
+    }
+    </script>
 
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="layout-override.css">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="logo.png">
@@ -66,6 +108,12 @@
         <!-- Sidebar: History -->
         <aside class="sidebar glass-panel">
             <h3 class="section-title history-title" id="historyTitle">السجل (History)</h3>
+
+            <div class="history-filters">
+                <button class="filter-tab active" data-filter="all" id="filterAll">All</button>
+                <button class="filter-tab" data-filter="favorites" id="filterFavorites">Favorites</button>
+            </div>
+
             <div id="historyList" class="history-list">
                 <!-- History items will be injected here -->
                 <div class="placeholder-state empty-history">
@@ -83,21 +131,24 @@
                 <form id="generatorForm">
                     <div class="form-group">
                         <label id="descLabel" for="prompt">وصف الفيديو</label>
+                        <button type="button" id="enhanceBtn" class="btn-enhance">
+                            <span>✨ Enhance</span>
+                        </button>
                         <textarea id="prompt" rows="4" placeholder="مثال: شخص مصدوم ينظر إلى شاشة الكمبيوتر..."
                             required></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label id="styleLabel" for="style">النمط الفني</label>
+                        <label id="styleLabel" for="style">نوع المحتوى</label>
                         <select id="style">
-                            <option value="realistic">واقعي (Realistic)</option>
-                            <option value="cartoon">كرتون (Cartoon)</option>
-                            <option value="3d">ثلاثي الأبعاد (3D Render)</option>
-                            <option value="anime">أنمي (Anime)</option>
-                            <option value="caricature">كاريكاتير (Caricature)</option>
                             <option value="gaming">ألعاب (Gaming) 🎮</option>
-                            <option value="horror">رعب (Horror) 👻</option>
+                            <option value="vlog">فلوق (Vlog) ☀️</option>
                             <option value="tech">تقنية (Tech) 💻</option>
+                            <option value="horror">رعب (Horror) 👻</option>
+                            <option value="educational">تعليمي (Educational) 📚</option>
+                            <option value="comedy">كوميدي (Comedy) 😂</option>
+                            <option value="fitness">رياضة (Fitness) 💪</option>
+                            <option value="food">طعام (Food) 🍔</option>
                         </select>
                     </div>
 
@@ -163,7 +214,14 @@
                     <div class="loading-state" id="loadingState">
                         <span class="loader"></span>
                         <p id="loadingText">جاري تصميم الصورة بالذكاء الاصطناعي...</p>
+                        <p id="timeEstimation" class="time-estimation">Estimated time: 5-10 seconds</p>
+                        <button id="cancelBtn" class="btn btn-secondary btn-sm" style="margin-top: 10px;">
+                            <span>Cancel Generation</span>
+                        </button>
                     </div>
+
+                    <!-- Toast Container -->
+                    <div id="toastContainer" class="toast-container"></div>
 
                     <!-- Result Image -->
                     <img id="imageCanvas" alt="Generated Thumbnail" crossorigin="anonymous">

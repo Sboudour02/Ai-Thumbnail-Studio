@@ -1,0 +1,189 @@
+/* ============================================
+   LAYOUT OVERRIDE - 2-Column Grid System
+   ============================================ */
+
+/* --- App Container (2-Column Grid) --- */
+.app-container {
+    display: grid !important;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: calc(100vh - 160px);
+}
+
+/* --- Sidebar (History) --- */
+.sidebar {
+    width: 100% !important;
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+}
+
+/* --- Main Workspace --- */
+main {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 180px);
+}
+
+.editor-panel {
+    width: 100% !important;
+    gap: 20px;
+    overflow-y: visible !important;
+}
+
+.preview-panel {
+    width: 100% !important;
+    min-height: 500px;
+    overflow: visible !important;
+}
+
+/* --- Form Elements Improvements --- */
+.form-row {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+textarea {
+    min-height: 120px !important;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+input,
+textarea,
+select {
+    border: 2px solid var(--border) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--primary) !important;
+}
+
+/* ============================================
+   UI POLISH - Ad Containers & Filter Toggles
+   ============================================ */
+
+/* --- Advertisement Containers --- */
+.ad-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.ad-slot {
+    min-height: 100px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.ad-slot:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.ad-slot span {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* --- Modern Segmented Control for Filters --- */
+.history-filters {
+    display: flex !important;
+    gap: 0 !important;
+    padding: 4px;
+    background: rgba(26, 26, 46, 0.6);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.filter-tab {
+    flex: 1;
+    padding: 10px 16px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-tab:hover:not(.active) {
+    color: rgba(255, 255, 255, 0.8) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.filter-tab.active {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4),
+        0 0 20px rgba(139, 92, 246, 0.3);
+    transform: translateY(-1px);
+}
+
+.filter-tab.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 900px) {
+    .app-container {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+    }
+
+    .sidebar {
+        max-height: 400px;
+    }
+
+    main {
+        max-height: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-tab {
+        padding: 8px 12px !important;
+        font-size: 0.85rem !important;
+    }
+}
